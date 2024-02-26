@@ -136,6 +136,10 @@ curl -X POST -i -w '\n' \
         "avatar": "http://dummyimage.com/139x100.png/cc0000/ffffff"
 }'
 """
+
+@app.errorhandler(404)
+def api_not_found(error):
+    return {"message": "Api not found"}, 404
 @app.route("/no_content")
 def no_content():
     return "No content found", 204
