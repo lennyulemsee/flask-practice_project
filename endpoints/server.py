@@ -2,6 +2,7 @@ from flask import Flask, make_response, request
 
 app = Flask(__name__)
 
+""" A simple flask app that handles CRUD """
 data = [
     {
         "id": "3b58aade-8415-49dd-88db-8d7bce14932a",
@@ -62,6 +63,7 @@ data = [
 
 @app.route("/data")
 def get_data():
+    """ This checks whether there is any data stored"""
     try:
         if data and len(data) > 0:
             return {"message": f"Data of length {len(data)} found"}
@@ -73,7 +75,7 @@ def get_data():
 
 @app.route("/name_search")
 def name_search():
-
+    """ searches for the name given in the url parameters """ 
     fr_name = request.args.get("q")
     if not fr_name:
         return ({"message": "Invalid input parameter"}, 422)
@@ -86,6 +88,7 @@ def name_search():
 
 @app.route("/count")
 def count():
+    """ counts the number of people stored """
     try:
         ct = len(data)
         return {"Data count": ct}, 200
@@ -94,6 +97,7 @@ def count():
 
 @app.route("/person/<uuid:id>")
 def find_by_uuid(id):
+    """ Searches for the person with the given UUID """
     for person in data:
         if str(id) == person["id"]:
             return person, 200
@@ -101,6 +105,7 @@ def find_by_uuid(id):
 
 @app.route("/person/<uuid:id>", methods=["DELETE"])
 def delete_by_uuid(id):
+    """ Deletes the person with the given uuid """
     for person in data:
         if str(id) == person["id"]:
             data.remove(person)
@@ -109,6 +114,7 @@ def delete_by_uuid(id):
 
 @app.route("/person", methods=["POST"])
 def add_by_uuid():
+    """ Recieves a person object and adds the person to the storage """
     new_person = request.json
     if not new_person:
         return ({"message": "Invalid input parameter"}, 422)
@@ -139,6 +145,9 @@ curl -X POST -i -w '\n' \
 
 @app.errorhandler(404)
 def api_not_found(error):
+    """ Handles the 404 error
+    returns json instead of the default html template.
+    """
     return {"message": "Api not found"}, 404
 @app.route("/no_content")
 def no_content():
@@ -146,6 +155,7 @@ def no_content():
 
 @app.route("/exp")
 def index_explicit():
+    """ How to use a response object instead """
     resp = make_response({"message": "Hello world"})
     resp.status_code = 200
     return resp
